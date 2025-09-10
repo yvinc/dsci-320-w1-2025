@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# hide large data from being commited
+data/
+
 # Distribution / packaging
 .Python
 build/
