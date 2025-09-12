@@ -1,0 +1,81 @@
+---
+title: "Python Crash Course" 
+subtitle: "Pandas Exercises" 
+date: "2025-09-07"
+---
+
+# Pandas Introduction - Practice Exercises 
+
+Complete these exercises to test your understanding of pandas fundamentals.
+
+```{python}
+import pandas as pd
+import numpy as np
+```
+
+## Exercise 1: Series Creation and Operations
+
+Create two pandas Series with the following data:
+
+**Series A (temperatures)**: Values `[22, 25, 23, 26, 24]` with index `['Mon', 'Tue', 'Wed', 'Thu', 'Fri']`
+
+**Series B (humidity)**: Values `[60, 65, 70, 55, 62]` with index `['Tue', 'Wed', 'Thu', 'Fri', 'Sat']`
+
+Tasks: 1. Create both Series and print them 2. Add the two Series together. What happens to the mismatched indices? 3. Calculate the mean temperature and maximum humidity 4. Find which day had the lowest temperature
+
+```{python}
+# Your code here
+```
+
+## Exercise 2: DataFrame Creation and Selection
+
+Create a DataFrame with student information:
+
+| Name  | Age | Major            | GPA | Year      |
+|-------|-----|------------------|-----|-----------|
+| Alice | 20  | Computer Science | 3.8 | Sophomore |
+| Bob   | 22  | Mathematics      | 3.5 | Senior    |
+| Carol | 19  | Physics          | 3.9 | Freshman  |
+| David | 21  | Computer Science | 3.6 | Junior    |
+
+Tasks: 1. Create the DataFrame using a dictionary 2. Select only the 'Name' and 'GPA' columns 3. Select the first two rows using `.iloc[]` 4. Select all Computer Science students using `.loc[]` with boolean indexing 5. Get Bob's GPA using label-based selection
+
+```{python}
+# Your code here
+```
+
+## Exercise 3: Boolean Indexing and Filtering
+
+Using the student DataFrame from Exercise 2, write code to:
+
+1.  Find all students with GPA above 3.7
+2.  Find all students who are either Seniors OR have GPA above 3.8
+3.  Find Computer Science students who are not Freshmen
+4.  Count how many students are in each year
+5.  Create a new DataFrame containing only Juniors and Seniors
+
+**Hint**: Remember to use `&` for AND, `|` for OR, and parentheses around each condition.
+
+```{python}
+# Your code here
+```
+
+## Exercise 4: Data Exploration with Built-in Methods
+
+Create a DataFrame with sales data:
+
+```{python}
+sales_data = {
+    'Product': ['Laptop', 'Mouse', 'Keyboard', 'Monitor', 'Tablet', 'Phone'],
+    'Price': [999, 25, 75, 300, 450, 800],
+    'Quantity_Sold': [50, 200, 150, 80, 120, 95],
+    'Category': ['Electronics', 'Accessories', 'Accessories', 'Electronics', 'Electronics', 'Electronics']
+}
+df_sales = pd.DataFrame(sales_data)
+```
+
+Tasks: 1. Display basic information about the DataFrame (shape, column names, data types) 2. Calculate the revenue for each product (Price Ã— Quantity_Sold) 3. Find the product with the highest price and the product with the lowest price 4. Calculate the total revenue for all products combined 5. Get summary statistics for the Price and Quantity_Sold columns
+
+```{python}
+# Your code here
+```

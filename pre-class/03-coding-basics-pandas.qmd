@@ -1,0 +1,360 @@
+---
+title: "Python Crash Course" 
+subtitle: "Pandas Intro" 
+date: "2025-09-07"
+---
+
+# Introduction to Pandas
+
+## Learning outcomes
+
+-   Create Pandas series and dataframes
+-   Access values from a DataFrame using `df[]`, `df.loc[]`, `df.iloc[]`, and boolean indexing
+-   Perform basic arithmetic operations between two series and anticipate the result
+-   Describe how Pandas assigns dtypes to Series and understand the `object` dtype
+-   Read a standard `.csv` file from a local path or url using `pd.read_csv()`
+
+## What is Pandas?
+
+-   The most popular Python library for tabular data structures
+-   Think of Pandas as an extremely powerful version of Excel (but free and with many more features!)
+-   It's Python's version of R's `dplyr`
+-   The primary tool you'll need for most data wrangling tasks
+
+[Source: giphy.com](https://giphy.com/gifs/panda-angry-breaking-EPcvhM28ER9XW)
+
+We usually import pandas with the alias `pd`:
+
+``` {python}
+import pandas as pd
+import numpy as np
+```
+
+## Pandas Series
+
+### What are Series?
+
+A Series is a labeled list of values, similar to a Python dictionary: - Strictly 1-dimensional and can contain any data type (integers, strings, floats, objects, etc.) - Series labels (index) may be integers or strings - Created using `pd.Series()` (note the capital "S") - Here are some example series:
+
+![](img/lecture6/series.png)
+
+### Creating Series
+
+By default, series are labeled with indices starting from 0:
+
+```{python}
+# Basic series creation
+numbers = pd.Series([-5, 1.3, 21, 6, 3])
+print(numbers)
+# 0    -5.0
+# 1     1.3
+# 2    21.0
+# 3     6.0
+# 4     3.0
+# dtype: float64
+
+# Custom index
+letters = pd.Series([-5, 1.3, 21, 6, 3], index=["a", "b", "c", "d", "e"])
+print(letters)
+# a    -5.0
+# b     1.3
+# c    21.0
+# d     6.0
+# e     3.0
+# dtype: float64
+
+# From dictionary
+dict_series = pd.Series({'a': 10, 'b': 20, 'c': 30})
+print(dict_series)
+# a    10
+# b    20
+# c    30
+# dtype: int64
+```
+
+### Series Operations
+
+**Key Concept**: Unlike arrays, operations between Series align values based on their **LABELS** (not position). The result includes the sorted union of both indexes.
+
+```{python}
+s1 = pd.Series(range(4), index=["A", "B", "C", "D"])
+s2 = pd.Series(range(10, 14), index=["B", "C", "D", "E"])
+
+print("s1:", s1.values, "Index:", s1.index.tolist())
+print("s2:", s2.values, "Index:", s2.index.tolist())
+
+# Addition aligns by labels
+result = s1 + s2
+print("s1 + s2:")
+print(result)
+```
+
+-   Indices that match will be operated on
+-   Indices that don't match will appear in the product but with `NaN` values
+
+![](img/lecture6/series_addition.png)
+
+**Common Series operations:**
+
+```{python}
+# Mathematical operations
+s1 ** 2                    # [0, 1, 4, 9]
+s1.mean()                  # 1.5
+s1.sum()                   # 6
+
+# Method chaining
+s1.add(3).pow(2).mean()    # Chain operations together
+
+# Type conversion
+s1.astype(float)           # Convert to different dtype
+```
+
+### Data Types in Series
+
+Series can hold various data types. Pandas automatically infers the most appropriate dtype:
+
+```{python}
+# Numeric data
+numbers = pd.Series([1, 2, 3])
+print(numbers.dtype)       # int64
+
+# String data (uses 'object' dtype)
+text = pd.Series(['A', 'B', 'C'])
+print(text.dtype)          # object
+
+# Mixed data also uses 'object' dtype
+mixed = pd.Series([1, 'A', 3.14])
+print(mixed.dtype)         # object
+```
+
+> **Note**: The `object` dtype is used for strings or mixed data types.
+
+## Pandas DataFrames
+
+### What are DataFrames?
+
+DataFrames are your primary tool for data analysis: - Like Excel spreadsheets or R dataframes - Think of a DataFrame as a collection of Series with a shared index - Each column is a Series, each row represents an observation
+
+![](img/lecture6/dataframe.png)
+
+### Creating DataFrames
+
+```{python}
+# From a dictionary (most common)
+data_dict = {
+    "Name": ["Arman", "Mike", "Tasha"],
+    "Language": ["Python", "Python", "R"],
+    "Courses": [100, 200, 300]
+}
+df = pd.DataFrame(data_dict)
+print(df)
+
+# From lists of lists
+data_lists = [['Arman', 'Python', 100],
+              ['Mike', 'Python', 200], 
+              ['Tasha', 'R', 300]]
+df2 = pd.DataFrame(data_lists, columns=['Name', 'Language', 'Courses'])
+
+# From numpy array
+import numpy as np
+data_array = np.array([['Arman', 7], ['Mike', 15], ['Tasha', 3]])
+df3 = pd.DataFrame(data_array, columns=['Name', 'Number'])
+```
+
+## Indexing and Selecting Data
+
+There are four main ways to select data from DataFrames. **When modifying data, always use `.loc` or `.iloc` to avoid warnings.**
+
+### Method 1: Square Brackets `[]`
+
+**Best for**: Selecting columns
+
+```{python}
+# Select single column (returns Series)
+df['Name']
+
+# Select multiple columns (returns DataFrame)
+df[['Name', 'Language']]
+
+# Select rows by slice (not recommended)
+df[0:2]  # Works but use .iloc instead
+```
+
+### Method 2: Label-based selection `.loc[]`
+
+**Best for**: Selecting by row/column labels
+
+```{python}
+# Select specific rows and columns by label
+df.loc[0, 'Name']                    # Single value
+df.loc[:, 'Name']                    # All rows, one column
+df.loc[0:2, 'Name':'Language']       # Row and column slices
+df.loc[[0, 2], ['Name', 'Courses']]  # Specific rows and columns
+```
+
+### Method 3: Position-based selection `.iloc[]`
+
+**Best for**: Selecting by integer positions
+
+```{python}
+# Select by integer position
+df.iloc[0]                    # First row (Series)
+df.iloc[0:2]                  # First two rows (DataFrame)
+df.iloc[0, 1]                 # Row 0, Column 1 (value)
+df.iloc[[0, 2], [0, 2]]      # Specific positions
+```
+
+### Method 4: Boolean indexing
+
+**Best for**: Filtering data based on conditions
+
+```{python}
+# Create boolean mask
+python_users = df['Language'] == 'Python'
+print(python_users)  # [True, True, False]
+
+# Filter DataFrame
+df[python_users]
+# or more concisely:
+df[df['Language'] == 'Python']
+
+# Multiple conditions
+df[(df['Language'] == 'Python') & (df['Courses'] > 511)]
+```
+
+> **Quick Reference**: Use `[]` for columns, `.loc[]` for labels, `.iloc[]` for positions, and boolean indexing for filtering.
+
+## Reading and Writing Data
+
+### CSV Files
+
+Pandas excels at reading various file formats. CSV is the most common:
+
+```{python}
+# Read from URL
+
+df = pd.read_csv('https://raw.githubusercontent.com/kemiolamudzengi/dsci-320-datasets/main/YVR_weather_data.csv')
+
+
+# Common parameters
+'''
+df = pd.read_csv('file.csv',
+                 index_col=0,        # Use first column as index
+                 parse_dates=True,   # Parse date columns
+                 na_values=['N/A'])  # Additional missing value indicators
+'''
+
+# Write to CSV
+df.to_csv('output.csv', index=False)  # Don't include row numbers
+```
+
+### Other File Formats
+
+Pandas can read many formats: - **Excel**: `pd.read_excel('file.xlsx')` - **JSON**: `pd.read_json('file.json')` - **HTML tables**: `pd.read_html('webpage.html')` - **Parquet**: `pd.read_parquet('file.parquet')`
+
+## Essential DataFrame Operations
+
+Once you have data in a DataFrame, these operations will be your daily tools:
+
+### Basic Information
+
+```{python}
+df.shape              # (rows, columns)
+df.columns            # Column names
+df.index              # Row labels
+df.dtypes             # Data types of each column
+df.info()             # Overview of DataFrame
+df.describe()         # Statistical summary
+```
+
+### Data Exploration
+
+```{python}
+# Quick look at data
+df.head()             # First 5 rows
+df.tail()             # Last 5 rows  
+df.sample(10)         # Random 10 rows
+```
+
+### Sorting and Organizing
+
+```{python}
+# Sort by values
+df.sort_values(by='Mean Max Temp (Â°C)', ascending=False)
+
+# Sort by multiple columns
+df.sort_values(by=['Year', 'Month'])
+
+# Sort by index
+df.sort_index()
+```
+
+### Data Analysis
+
+```{python}
+# Find the hottest day
+hottest_temp = df['Extr Max Temp (Â°C)'].max()
+hottest_day = df.loc[df['Extr Max Temp (Â°C)'].idxmax(), 'Date/Time']
+print(f"Hottest temperature: {hottest_temp}Â°C on {hottest_day}")
+```
+
+-   `max()` finds the highest temperature value
+-   `idxmax()` finds the **index** (row number) where the maximum value occurs
+-   `df.loc[index, 'column']` uses that index to get the corresponding date from the 'Date/Time' column
+
+**Key concept**: `max()` gives you the value, `idxmax()` gives you where it happened.
+
+```{python}
+# Average temperature by month
+monthly_temps = df.groupby('Month')['Mean Temp (Â°C)'].mean()
+print("Average temperature by month:")
+print(monthly_temps)
+```
+
+This is a powerful pandas operation: - `groupby('Month')` splits the data into groups by month (1=Jan, 2=Feb, etc.) - `['Mean Temp (Â°C)']` selects which column to analyze - `.mean()` calculates the average temperature for each month group
+
+Result: Average temperature for each of the 12 months across all years.
+
+```{python}
+
+# Filter for recent hot summers
+hot_summers = df[(df['Year'] >= 2000) & 
+                     (df['Month'].isin([6, 7, 8])) & 
+                     (df['Mean Max Temp (Â°C)'] > 20)]
+print(f"Hot summer months since 2000: {len(hot_summers)}")
+```
+
+This creates a filtered dataset using multiple conditions: - `df['Year'] >= 2000` - only years 2000 and later - `df['Month'].isin([6, 7, 8])` - only June, July, August - `df['Mean Max Temp (Â°C)'] > 20` - only when max temp exceeded 20Â°C - `&` combines conditions with AND logic (all must be true) - **Important**: Each condition needs parentheses when using `&`
+
+## Key Concepts Summary
+
+| Concept | When to Use | Example |
+|---------------------|------------------------------|---------------------|
+| **Series** | Single column of data | `pd.Series([1, 2, 3])` |
+| **DataFrame** | Tabular data | `pd.DataFrame({'A': [1, 2], 'B': [3, 4]})` |
+| **`df[]`** | Select columns | `df['Name']` or `df[['Name', 'Age']]` |
+| **`df.loc[]`** | Select by labels | `df.loc[0, 'Name']` |
+| **`df.iloc[]`** | Select by position | `df.iloc[0, 1]` |
+| **Boolean indexing** | Filter data | `df[df['Age'] > 25]` |
+| **`pd.read_csv()`** | Load data | `pd.read_csv('file.csv')` |
+
+## Next Steps
+
+Now that you understand the fundamentals:
+
+1.  **Practice with real datasets** - Apply these concepts to data you care about
+2.  **Learn data cleaning** - Handle missing values, duplicates, and inconsistent data
+3.  **Explore grouping and aggregation** - Summarize data by categories
+4.  **Master plotting** - Visualize your data with pandas plotting functions
+
+Pandas is a powerful library, but these fundamentals will take you far. The key is practice with real data!
+
+## Additional Resources
+
+-   [Pandas Documentation](https://pandas.pydata.org/docs/)
+-   [W3Schools Pandas Tutorial](https://www.w3schools.com/python/pandas/default.asp)
+-   [Pandas Cheat Sheet](https://pandas.pydata.org/Pandas_Cheat_Sheet.pdf)
+
+------------------------------------------------------------------------
+
+*Remember: When you encounter errors or unexpected behavior, check your data types (`df.dtypes`) and look for missing values (`df.isna().sum()`). Most pandas problems stem from these two issues.*
