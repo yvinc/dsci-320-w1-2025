@@ -14,7 +14,7 @@ import anndata as ad
 ```
 
 ```{python}
-anndata = pd.read_csv('data/moffitt_hypothalamus_cells.csv')
+anndata = pd.read_csv('data/Moffitt_and_Bambah-Mukku_et_al_merfish_all_cells.csv')
 ```
 
 ```{python}
@@ -190,6 +190,10 @@ df = pd.DataFrame({
     'log_expr_Slc17a7': adata_subset[:, 'Slc17a7'].X.toarray().flatten(),
 'bregma': adata.obs['Bregma']})
 ```
+
+### Downsampling:
+
+> For Vis
 
 ```{python}
 df_viz = df.sample(frac=0.3, random_state=42).reset_index(drop=True)
