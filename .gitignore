@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # hide large data from being commited
-data/
+# data/
 
 # Distribution / packaging
 .Python
